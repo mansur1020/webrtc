@@ -2,7 +2,7 @@
 
 > Please make sure you've [installed](https://github.com/muaz-khan/RTCMultiConnection/tree/master/docs/installation-guide.md) RTCMultiConnection.
 
-* [Getting Started guide for RTCMultiConnection](https://github.com/muaz-khan/RTCMultiConnection/tree/master/docs/getting-started.md)
+- [Getting Started guide for RTCMultiConnection](https://github.com/muaz-khan/RTCMultiConnection/tree/master/docs/getting-started.md)
 
 ```html
 <!-- or -->
@@ -49,7 +49,7 @@ You can use custom ports either via `config.json` file:
 
 ```json
 {
-  "socketURL": "https://yourdomain.com:9001/",
+  "socketURL": "https://yourdomain.com:3005/",
   "socketMessageEvent": "RTCMultiConnection-Message"
 }
 ```
@@ -57,11 +57,11 @@ You can use custom ports either via `config.json` file:
 Or simply override in your HTML code:
 
 ```javascript
-connection.socketURL = 'https://yourdomain.com:9001/';
+connection.socketURL = "https://yourdomain.com:3005/";
 
 // if your server is already having "message" event
 // then you can use something else, unique.
-connection.socketMessageEvent = 'unique-message';
+connection.socketMessageEvent = "unique-message";
 ```
 
 **For testing purpose**, you can use this as well:
@@ -76,16 +76,16 @@ connection.socketMessageEvent = 'unique-message';
 Or:
 
 ```javascript
-connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
+connection.socketURL = "https://rtcmulticonnection.herokuapp.com:443/";
 ```
 
 Here is a demo explaining how to use above `socketURL`:
 
-* https://jsfiddle.net/zd9Lsdfk/50/
+- https://jsfiddle.net/zd9Lsdfk/50/
 
 ## Integrate in your own applications?
 
-* https://github.com/muaz-khan/RTCMultiConnection-Server/wiki/Integrate-inside-nodejs-applications
+- https://github.com/muaz-khan/RTCMultiConnection-Server/wiki/Integrate-inside-nodejs-applications
 
 # Other Documents
 

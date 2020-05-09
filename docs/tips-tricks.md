@@ -7,11 +7,11 @@
 Modify [`Signaling-Server.js`](https://github.com/muaz-khan/RTCMultiConnection-Server/blob/master/node_scripts/Signaling-Server.js) and add this line:
 
 ```javascript
-io.on('connection', onConnection);
+io.on("connection", onConnection);
 
 // add this line,
 // quickly after above line
-io.set('origins', 'https://domain.com');
+io.set("origins", "https://domain.com");
 ```
 
 Otherwise:
@@ -32,27 +32,27 @@ function onConnection(socket) {
 }
 ```
 
-Now you've restricted the usage of socket.io only on domain `https://domain.com:9001`.
+Now you've restricted the usage of socket.io only on domain `https://domain.com:3005`.
 
 ## How to arrange videos?
 
 It happens all insidde the [`onstream`](https://www.rtcmulticonnection.org/docs/onstream/) event.
 
 ```javascript
-connection.onstream = function(event) {
-    if (event.type == 'local') {
-        showLocalVideo(event);
-        return;
-    }
+connection.onstream = function (event) {
+  if (event.type == "local") {
+    showLocalVideo(event);
+    return;
+  }
 
-    if (event.type == 'remote') {
-        var numberOfUsers = connection.getAllParticipants().length;
-        if (numberOfUsers == 1) {
-            showFirstUserVideoOnFullScreen(event);
-        } else {
-            showSecondAndUpcomingVideosInSmallDiv(event);
-        }
+  if (event.type == "remote") {
+    var numberOfUsers = connection.getAllParticipants().length;
+    if (numberOfUsers == 1) {
+      showFirstUserVideoOnFullScreen(event);
+    } else {
+      showSecondAndUpcomingVideosInSmallDiv(event);
     }
+  }
 };
 
 function showLocalVideo(event) {}
@@ -64,37 +64,44 @@ function showSecondAndUpcomingVideosInSmallDiv(event) {}
 
 #### Points to be noted:
 
-1. We are comparing `even.type == local or remote` to detect video's  type.
+1. We are comparing `even.type == local or remote` to detect video's type.
 2. We can differentiate between audio, video and screen using `event.stream.isScreen` or `event.stream.isAudio` or `event.stream.isVideo`.
 3. Unique `event.streamid` to set unique `IDs` for each video element.
 
 E.g.
 
 ```javascript
-connection.onstream = function(event) {
-    var videoElement = event.mediaElement;
+connection.onstream = function (event) {
+  var videoElement = event.mediaElement;
 
-    // "streamid" uniquely identifies each video
-    videoElement.id = event.streamid;
+  // "streamid" uniquely identifies each video
+  videoElement.id = event.streamid;
 
-    // single user can share multiple videos (+multiple screens)
-    videoElement.setAttribute('data-userid', event.userid);
+  // single user can share multiple videos (+multiple screens)
+  videoElement.setAttribute("data-userid", event.userid);
 
-    videoElement.onclick = function() {
-        // get the unique stream-id
-        var streamid = this.id;
+  videoElement.onclick = function () {
+    // get the unique stream-id
+    var streamid = this.id;
 
-        // get user-id
-        var userid = this.getAttribute('data-userid');
+    // get user-id
+    var userid = this.getAttribute("data-userid");
 
-        // you can access native RTCPeerConnection object
-        var allVideosComingFromThisUser = connection.peers[userid].peer.getRemoteStreams();
+    // you can access native RTCPeerConnection object
+    var allVideosComingFromThisUser = connection.peers[
+      userid
+    ].peer.getRemoteStreams();
 
-        // you can access the MediaStream data
-        var streamEvent = connection.streamEvents[streamid];
+    // you can access the MediaStream data
+    var streamEvent = connection.streamEvents[streamid];
 
-        console.log(streamEvent.type, streamEvent.stream.isScreen, streamEvent.stream, streamEvent.mediaElement);
-    };
+    console.log(
+      streamEvent.type,
+      streamEvent.stream.isScreen,
+      streamEvent.stream,
+      streamEvent.mediaElement
+    );
+  };
 };
 ```
 
@@ -110,54 +117,54 @@ As you can see in the above snippet, we are setting two HTML attributes:
 You can always reset the `video.src`:
 
 ```javascript
-videoElement.onclick = function() {
-    // get the unique stream-id
-    var streamid = this.id;
+videoElement.onclick = function () {
+  // get the unique stream-id
+  var streamid = this.id;
 
-    // you can access the MediaStream data
-    var streamEvent = connection.streamEvents[streamid];
+  // you can access the MediaStream data
+  var streamEvent = connection.streamEvents[streamid];
 
-    // access native MediaStreamObject
-    var mediaStream = streamEvent.stream;
+  // access native MediaStreamObject
+  var mediaStream = streamEvent.stream;
 
-    // reset the URL
-    videoElement.src = URL.createObjectURL(mediaStream);
-    videoElement.play();
+  // reset the URL
+  videoElement.src = URL.createObjectURL(mediaStream);
+  videoElement.play();
 };
 ```
 
 You can merge or stop tracks:
 
 ```javascript
-videoElement.onclick = function() {
-    // get the unique stream-id
-    var streamid = this.id;
+videoElement.onclick = function () {
+  // get the unique stream-id
+  var streamid = this.id;
 
-    // you can access the MediaStream data
-    var streamEvent = connection.streamEvents[streamid];
+  // you can access the MediaStream data
+  var streamEvent = connection.streamEvents[streamid];
 
-    // access native MediaStreamObject
-    var mediaStream = streamEvent.stream;
+  // access native MediaStreamObject
+  var mediaStream = streamEvent.stream;
 
-    // add new track
-    mediaStream.addTrack(newTrack);
+  // add new track
+  mediaStream.addTrack(newTrack);
 
-    // remove existing track
-    var videoTrack = mediaStream.getVideoTracks()[0];
-    mediaStream.removeTrack(videoTrack);
+  // remove existing track
+  var videoTrack = mediaStream.getVideoTracks()[0];
+  mediaStream.removeTrack(videoTrack);
 };
 ```
 
 You can renegotiate peers to share new tracks:
 
 ```javascript
-videoElement.onclick = function() {
-    // get user-id
-    var userid = this.getAttribute('data-userid');
+videoElement.onclick = function () {
+  // get user-id
+  var userid = this.getAttribute("data-userid");
 
-    // renegotiate to update RTCPeerConnection
-    // it will reset ports; access all fresh tracks; etc.
-    connection.renegotiate(userid);
+  // renegotiate to update RTCPeerConnection
+  // it will reset ports; access all fresh tracks; etc.
+  connection.renegotiate(userid);
 };
 ```
 
@@ -165,8 +172,8 @@ videoElement.onclick = function() {
 
 ```html
 <script>
-// add this script before loading "RTCMultiConnection.min.js"
-window.getExternalIceServers = true;
+  // add this script before loading "RTCMultiConnection.min.js"
+  window.getExternalIceServers = true;
 </script>
 <script src="https://rtcmulticonnection.herokuapp.com/dist/RTCMultiConnection.min.js"></script>
 ```
@@ -180,7 +187,7 @@ Now you will get maximum WebRTC success across all devices.
 `Object.observe` has been removed since `v3.2.95`. So you've to manually update-extra-data or set stream-end-handlers:
 
 ```javascript
-connection.extra.something = 'something';
+connection.extra.something = "something";
 connection.updateExtraData();
 ```
 
@@ -198,47 +205,47 @@ connection.setStreamEndHandler(yourExternalStrea);
 Change userid using this method:
 
 ```javascript
-connection.changeUserId('your-new-userid');
+connection.changeUserId("your-new-userid");
 ```
 
 ## ReUse Socket.io
 
-* https://github.com/muaz-khan/RTCMultiConnection/issues/170#issuecomment-223758688
+- https://github.com/muaz-khan/RTCMultiConnection/issues/170#issuecomment-223758688
 
 ## Record Videos
 
 ```html
 <script src="https://cdn.WebRTC-Experiment.com/RecordRTC.js"></script>
 <script>
-var listOfRecorders = {};
-connection.onstream = function(event) {
+  var listOfRecorders = {};
+  connection.onstream = function (event) {
     var recorder = RecordRTC(event.stream, {
-        type: 'video',
-        recorderType: MediaStreamRecorder
+      type: "video",
+      recorderType: MediaStreamRecorder,
     });
 
     recorder.startRecording();
 
     listOfRecorders[event.streamid] = recorder;
-};
+  };
 
-btnStopRecording.onclick = function() {
-    var streamid = prompt('Enter stream-id');
+  btnStopRecording.onclick = function () {
+    var streamid = prompt("Enter stream-id");
 
-    if(!listOfRecorders[streamid]) throw 'Wrong stream-id';
+    if (!listOfRecorders[streamid]) throw "Wrong stream-id";
 
     var recorder = listOfRecorders[streamid];
-    recorder.stopRecording(function() {
-        var blob = recorder.getBlob();
+    recorder.stopRecording(function () {
+      var blob = recorder.getBlob();
 
-        window.open( URL.createObjectURL(blob) );
+      window.open(URL.createObjectURL(blob));
 
-        // or upload to server
-        var formData = new FormData();
-        formData.append('file', blob);
-        $.post('/server-address', formData, serverCallback);
+      // or upload to server
+      var formData = new FormData();
+      formData.append("file", blob);
+      $.post("/server-address", formData, serverCallback);
     });
-};
+  };
 </script>
 ```
 
@@ -248,7 +255,7 @@ Wanna try a hack? **You will be able to record entire tab + all audios**.
 
 First of all, install this Google Chrome extension:
 
-* https://chrome.google.com/webstore/detail/recordrtc/ndcljioonkecdnaaihodjgiliohngojp
+- https://chrome.google.com/webstore/detail/recordrtc/ndcljioonkecdnaaihodjgiliohngojp
 
 Now, install **last Google Chrome Canary**. Remember, chrome version 53+.
 
@@ -268,31 +275,31 @@ Again, above chrome extension requires Google Chrome version greater than or equ
 
 ```javascript
 connection.session = {
-    audio: true,
-    screen: true
+  audio: true,
+  screen: true,
 };
 
-connection.onstream = function(event) {
-    if(connection.attachStreams.length <= 1) return;
+connection.onstream = function (event) {
+  if (connection.attachStreams.length <= 1) return;
 
-    var screenStream, audioStream;
-    connection.attachStreams.forEach(function(stream) {
-        if(stream.isScreen) screenStream = true;
-        if(stream.isAudio) audioSTream = true;
-    });
+  var screenStream, audioStream;
+  connection.attachStreams.forEach(function (stream) {
+    if (stream.isScreen) screenStream = true;
+    if (stream.isAudio) audioSTream = true;
+  });
 
-    if(!screenStream || !audioStream) return;
+  if (!screenStream || !audioStream) return;
 
-    var audioPlusScreenStream = new MediaStream();
-    audioPlusScreenStream.addTrack( screenStream.getVideoTracks()[0] );
-    audioPlusScreenStream.addTrack( audioStream.getAudioTracks()[0] );
+  var audioPlusScreenStream = new MediaStream();
+  audioPlusScreenStream.addTrack(screenStream.getVideoTracks()[0]);
+  audioPlusScreenStream.addTrack(audioStream.getAudioTracks()[0]);
 
-    var recorder = RecordRTC(audioPlusScreenStream, {
-        type: 'video',
-        recorderType: MediaStreamRecorder
-    });
+  var recorder = RecordRTC(audioPlusScreenStream, {
+    type: "video",
+    recorderType: MediaStreamRecorder,
+  });
 
-    recorder.startRecording();
+  recorder.startRecording();
 };
 ```
 
@@ -304,62 +311,66 @@ There are two possible methods:
 2. Share room-id as URL-query-parameters
 
 ```javascript
-var roomid = 'xyz';
-connection.open(roomid, function() {
-    var urlToShare = 'https://yourDomain.com/room.html#' + roomid;
+var roomid = "xyz";
+connection.open(roomid, function () {
+  var urlToShare = "https://yourDomain.com/room.html#" + roomid;
 
-    // or second technique
-    var urlToShare = 'https://yourDomain.com/room.html?roomid=' + roomid;
+  // or second technique
+  var urlToShare = "https://yourDomain.com/room.html?roomid=" + roomid;
 
-    window.open(urlToShare);
+  window.open(urlToShare);
 });
 ```
 
 Now target users can read room-id as following:
 
 ```javascript
-if(location.hash.length > 1) {
-    var roomid = location.hash.replace('#', '');
+if (location.hash.length > 1) {
+  var roomid = location.hash.replace("#", "");
 
-    // auto join room
-    connection.join(roomid);
+  // auto join room
+  connection.join(roomid);
 }
 ```
 
 Or read URL-query-parameters:
 
 ```javascript
-(function() {
-    var params = {},
-        r = /([^&=]+)=?([^&]*)/g;
+(function () {
+  var params = {},
+    r = /([^&=]+)=?([^&]*)/g;
 
-    function d(s) {
-        return decodeURIComponent(s.replace(/\+/g, ' '));
-    }
-    var match, search = window.location.search;
-    while (match = r.exec(search.substring(1)))
-        params[d(match[1])] = d(match[2]);
-    window.params = params;
+  function d(s) {
+    return decodeURIComponent(s.replace(/\+/g, " "));
+  }
+  var match,
+    search = window.location.search;
+  while ((match = r.exec(search.substring(1))))
+    params[d(match[1])] = d(match[2]);
+  window.params = params;
 })();
 
-if(params.roomid) {
-    // auto join room
-    connection.join(params.roomid);
+if (params.roomid) {
+  // auto join room
+  connection.join(params.roomid);
 }
 ```
 
 If you want to hide HTML for non-moderators or for users that are MERELY expected to join a room:
 
 ```javascript
-if(params.roomid || location.hash.length > 1) { // whatever condition suits you
-    $('.moderators-sections').hide();
+if (params.roomid || location.hash.length > 1) {
+  // whatever condition suits you
+  $(".moderators-sections").hide();
 
-    // or simple javascript
-    Array.prototype.slice.call(document.querySelectorAll('.moderators-sections')).forEach(function(div) {
-        div.style.display = 'none';
+  // or simple javascript
+  Array.prototype.slice
+    .call(document.querySelectorAll(".moderators-sections"))
+    .forEach(function (div) {
+      div.style.display = "none";
 
-        // or
-        div.parentNode.removeChild(div);
+      // or
+      div.parentNode.removeChild(div);
     });
 }
 ```
@@ -374,11 +385,11 @@ RTCMultiConnection v2 users should check this wiki-page: https://github.com/muaz
 
 v3 users should check this API (`connection.checkPresence`):
 
-* https://github.com/muaz-khan/RTCMultiConnection/blob/master/docs/api.md#checkpresence
+- https://github.com/muaz-khan/RTCMultiConnection/blob/master/docs/api.md#checkpresence
 
 v3 users can get list of existing public-rooms using this API (`connection.getPublicModerators`):
 
-* https://github.com/muaz-khan/RTCMultiConnection/blob/master/docs/api.md#getpublicmoderators
+- https://github.com/muaz-khan/RTCMultiConnection/blob/master/docs/api.md#getpublicmoderators
 
 However v2 users can use `connection.onNewSession` event: https://www.rtcmulticonnection.org/docs/onNewSession/
 

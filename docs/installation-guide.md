@@ -2,7 +2,7 @@
 
 > This page explains how to install RTCMultiConnection.
 
-* Youtube Video: [NPM install](https://www.youtube.com/watch?v=EtsiYEW_T8Y) or [Other Videos](https://www.youtube.com/watch?v=EtsiYEW_T8Y&list=PLPRQUXAnRydKdyun-vjKPMrySoow2N4tl)
+- Youtube Video: [NPM install](https://www.youtube.com/watch?v=EtsiYEW_T8Y) or [Other Videos](https://www.youtube.com/watch?v=EtsiYEW_T8Y&list=PLPRQUXAnRydKdyun-vjKPMrySoow2N4tl)
 
 # Fetch from Github
 
@@ -22,9 +22,7 @@ unzip master.zip
 
 Then call `npm install`.
 
-
 # Install using NPM or Bower
-
 
 ```sh
 npm install rtcmulticonnection
@@ -43,11 +41,11 @@ npm install
 node server.js
 ```
 
-Now open `http://localhost:9001/`.
+Now open `http://localhost:3005/`.
 
 # Modify config.json
 
-* https://github.com/muaz-khan/RTCMultiConnection-Server/wiki/config.json
+- https://github.com/muaz-khan/RTCMultiConnection-Server/wiki/config.json
 
 ```json
 {
@@ -68,26 +66,26 @@ Now run `server.js` and it will automatically use above configuration.
 
 # How to check if server is running correctly?
 
-Open this URL: `https://localhost:9001/socket.io/socket.io.js`
+Open this URL: `https://localhost:3005/socket.io/socket.io.js`
 
 If you can load `/socket.io/socket.io.js` on your server then it is working fine.
 
 # Stop Old Processes
 
-Check all processes running on port `9001` and stop process by `id`:
+Check all processes running on port `3005` and stop process by `id`:
 
 ```sh
-lsof -n -i4TCP:9001 | grep LISTEN
+lsof -n -i4TCP:3005 | grep LISTEN
 kill process-ID
 ```
 
 Or stop all processes on a specific port. (It may require `sudo` privileges):
 
 ```sh
-fuser -vk 9001/tcp
+fuser -vk 3005/tcp
 ```
 
-Now open: `http://localhost:9001/`
+Now open: `http://localhost:3005/`
 
 ## Keep running server in background using `pm2`
 
@@ -96,7 +94,8 @@ npm install pm2 -g
 pm2 startup  
 pm2 start server.js
 pm2 save
-```
+
+````
 
 Now `server.js` will auto restart on failure. Even auto run as soon as operating system reboots.
 
@@ -106,7 +105,7 @@ For more info about `pm2` please check [this link](https://github.com/Unitech/pm
 
 ```sh
 nohup nodejs server.js > /dev/null 2>&1 &
-```
+````
 
 Or:
 
